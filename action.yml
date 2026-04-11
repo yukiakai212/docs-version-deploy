@@ -1,0 +1,29 @@
+name: "docs-version-deploy"
+description: "Deploy versioned static documentation to any GitHub repository"
+author: "yukiakai212"
+
+inputs:
+  docs_dir:
+    required: true
+  target_repo:
+    required: true
+  branch:
+    required: true
+  version:
+    required: true
+  target_dir:
+    required: false
+    default: "."
+  is_latest:
+    required: false
+    default: "false"
+  commit_message:
+    required: false
+  write_static:
+    required: false
+    default: "true"
+  github_token:
+    required: true
+runs:
+  using: "node20"
+  main: "dist/action/action.cjs"
