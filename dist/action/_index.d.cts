@@ -34,7 +34,7 @@ interface ModeContext {
 }
 type ModeRule = (ctx: ModeContext) => void;
 interface DocsDeployerOptions {
-    targetDir: string;
+    relativeTargetDir: string;
     sourceDir: string;
     version: string;
     isLatest: boolean;
@@ -48,7 +48,7 @@ interface DeployOptions {
     targetRepo: string;
     rootDocsDir: string;
     docsSrcDir: string;
-    targetDir: string;
+    relativeTargetDir: string;
     commitMessage: string;
     isLatest: boolean;
     writeStaticFile: boolean;
