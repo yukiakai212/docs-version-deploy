@@ -59,6 +59,7 @@ declare class GitClient {
     private FAILURE_THRESHOLD;
     constructor(options: GitOptions);
     private get repoUrl();
+    private execGit;
     clone(): Promise<void>;
     setup(): Promise<void>;
     checkout(): Promise<void>;
