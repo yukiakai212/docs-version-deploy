@@ -163,6 +163,7 @@ declare const VERSIONS_FILE_NAME = "versions.json";
 declare const INDEX_HTML_FILE_NAME = "index.html";
 declare const MAIN_JS_FILE_NAME = "scripts.js";
 declare const CSS_FILE_NAME = "styles.css";
+declare const GIT_FOLDER_NAME = ".git";
 declare const DEFAULT_COMMIT_MESSAGE = "deploy({target}): release {version}";
 
 declare function resolveSafeTargetDir(baseDir: string, targetDir: string): string;
@@ -184,4 +185,4 @@ declare const DocsVersionsSchema: z.ZodObject<{
 declare function validateVersion(version: string): string;
 declare function sleep(ms: number): Promise<unknown>;
 
-export { ASSETS_FOLDER_NAME, CSS_FILE_NAME, CommitMessageBuilder, DEFAULT_COMMIT_MESSAGE, DocsDeployer, DocsPublisher, DocsVersionsSchema, GitClient, INDEX_HTML_CONTENT, INDEX_HTML_FILE_NAME, LATEST_FOLDER_NAME, MAIN_JS_CONTENT, MAIN_JS_FILE_NAME, ModeDetector, ModeValidator, STYLES_CSS_CONTENT, StaticFilesWriter, VERSIONS_FILE_NAME, VersionSchema, VersionsManager, VersionsScanner, createDocsDeployer, resolveSafeTargetDir, sleep, validateVersion };
+export { ASSETS_FOLDER_NAME, CSS_FILE_NAME, CommitMessageBuilder, DEFAULT_COMMIT_MESSAGE, DocsDeployer, DocsPublisher, DocsVersionsSchema, GIT_FOLDER_NAME, GitClient, INDEX_HTML_CONTENT, INDEX_HTML_FILE_NAME, LATEST_FOLDER_NAME, MAIN_JS_CONTENT, MAIN_JS_FILE_NAME, ModeDetector, ModeValidator, STYLES_CSS_CONTENT, StaticFilesWriter, VERSIONS_FILE_NAME, VersionSchema, VersionsManager, VersionsScanner, createDocsDeployer, resolveSafeTargetDir, sleep, validateVersion };
