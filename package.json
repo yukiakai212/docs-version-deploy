@@ -27,16 +27,7 @@
     "CHANGELOG.md"
   ],
   "keywords": [
-    "docs-version-deploy",
-    "find up",
-    "resolve",
-    "file",
-    "folder",
-    "regex",
-    "cjs",
-    "esm",
-    "typescript",
-    "matcher"
+    "docs-version-deploy"
   ],
   "author": "Yuki_akai",
   "homepage": "https://github.com/yukiakai212/docs-version-deploy",

@@ -62,7 +62,6 @@ declare class GitClient {
     clone(): Promise<void>;
     setup(): Promise<void>;
     checkout(): Promise<void>;
-    pull(): Promise<void>;
     commit(message: string): Promise<void>;
     add(pattern: string): Promise<void>;
     pushWithRetry(): Promise<void>;
