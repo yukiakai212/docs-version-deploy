@@ -73,6 +73,8 @@
     "@actions/io": "^3.0.2",
     "@yukiakai/actions-git": "^1.0.2",
     "@yukiakai/find-up": "^1.1.7",
+    "@yukiakai/path-extras": "^1.0.0",
+    "@yukiakai/zod-extras": "^1.0.0",
     "fs-extra": "^11.3.5",
     "pathe": "^2.0.3",
     "zod": "^4.3.6"

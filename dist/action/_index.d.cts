@@ -297,23 +297,23 @@ declare const VersionSchema: z.ZodObject<{
     version: z.ZodString;
     title: z.ZodString;
     date: z.ZodString;
-    group: z.ZodNullable<z.ZodString>;
+    group: z.ZodPipe<z.ZodString, z.ZodPipe<z.ZodString, z.ZodTransform<string | null, string>>>;
     cleanupStrategy: z.ZodEnum<typeof CleanupStrategy>;
 }, z.core.$strip>;
 declare const VersionMapSchema: z.ZodRecord<z.ZodString, z.ZodObject<{
     version: z.ZodString;
     title: z.ZodString;
     date: z.ZodString;
-    group: z.ZodNullable<z.ZodString>;
+    group: z.ZodPipe<z.ZodString, z.ZodPipe<z.ZodString, z.ZodTransform<string | null, string>>>;
     cleanupStrategy: z.ZodEnum<typeof CleanupStrategy>;
 }, z.core.$strip>>;
 declare const DocsVersionsSchema: z.ZodObject<{
-    latest: z.ZodNullable<z.ZodString>;
+    latest: z.ZodPipe<z.ZodString, z.ZodPipe<z.ZodString, z.ZodTransform<string | null, string>>>;
     versions: z.ZodRecord<z.ZodString, z.ZodObject<{
         version: z.ZodString;
         title: z.ZodString;
         date: z.ZodString;
-        group: z.ZodNullable<z.ZodString>;
+        group: z.ZodPipe<z.ZodString, z.ZodPipe<z.ZodString, z.ZodTransform<string | null, string>>>;
         cleanupStrategy: z.ZodEnum<typeof CleanupStrategy>;
     }, z.core.$strip>>;
 }, z.core.$strip>;
@@ -326,18 +326,14 @@ declare const RunOptionsSchema: z.ZodObject<{
     docsDir: z.ZodString;
     targetDir: z.ZodString;
     commitMessage: z.ZodString;
-    markAsLatest: z.ZodPipe<z.ZodString, z.ZodTransform<boolean, string>>;
-    writeStaticFiles: z.ZodPipe<z.ZodString, z.ZodTransform<boolean, string>>;
-    group: z.ZodPipe<z.ZodString, z.ZodTransform<string | null, string>>;
+    markAsLatest: z.ZodPipe<z.ZodString, z.ZodPipe<z.ZodString, z.ZodTransform<boolean, string>>>;
+    writeStaticFiles: z.ZodPipe<z.ZodString, z.ZodPipe<z.ZodString, z.ZodTransform<boolean, string>>>;
+    group: z.ZodPipe<z.ZodString, z.ZodPipe<z.ZodString, z.ZodTransform<string | null, string>>>;
     cleanupStrategy: z.ZodEnum<typeof CleanupStrategy>;
 }, z.core.$strip>;
 
-declare const BooleanSchema: z.ZodPipe<z.ZodString, z.ZodTransform<boolean, string>>;
-declare const NullableStringSchema: z.ZodPipe<z.ZodString, z.ZodTransform<string | null, string>>;
 declare const CleanupStrategySchema: z.ZodEnum<typeof CleanupStrategy>;
 
 declare function sleep(ms: number): Promise<unknown>;
-declare function safeJoin(base: string, target: string): string;
-declare function normalizeRelativePath(baseDir: string, input: string): string;
 
-export { ASSETS_FOLDER_NAME, BooleanSchema, CSS_FILE_NAME, CleanupStrategySchema, CommitMessageBuilder, DEFAULT_COMMIT_MESSAGE, DOCS_DEPLOY_METADATA_FILE_NAME, DeployContextValidator, DeployPreflightValidator, type DocsDeploySession, DocsDeploySessionFactory, DocsDeployer, DocsPipeline, DocsPublisher, DocsStructureDetector, DocsStructureValidator, DocsVersionsPersister, DocsVersionsRepository, DocsVersionsSchema, DocsVersionsStore, GIT_FOLDER_NAME, INDEX_HTML_CONTENT, INDEX_HTML_FILE_NAME, LATEST_FOLDER_NAME, LATEST_HTML_CONTENT, LATEST_HTML_FILE_NAME, MAIN_JS_CONTENT, MAIN_JS_FILE_NAME, ManagedFolderPublisher, ManagedFolderReconciler, NullableStringSchema, RESERVED_VERSION_NAMES, RunOptionsSchema, STYLES_CSS_CONTENT, StaticFilesWriter, VERSION_PATTERN, VersionFactory, VersionMapSchema, VersionPruner, VersionSchema, VersionsReconciler, VersionsScanner, createDocsDeployer, normalizeRelativePath, runDocsDeploy, safeJoin, sleep };
+export { ASSETS_FOLDER_NAME, CSS_FILE_NAME, CleanupStrategySchema, CommitMessageBuilder, DEFAULT_COMMIT_MESSAGE, DOCS_DEPLOY_METADATA_FILE_NAME, DeployContextValidator, DeployPreflightValidator, type DocsDeploySession, DocsDeploySessionFactory, DocsDeployer, DocsPipeline, DocsPublisher, DocsStructureDetector, DocsStructureValidator, DocsVersionsPersister, DocsVersionsRepository, DocsVersionsSchema, DocsVersionsStore, GIT_FOLDER_NAME, INDEX_HTML_CONTENT, INDEX_HTML_FILE_NAME, LATEST_FOLDER_NAME, LATEST_HTML_CONTENT, LATEST_HTML_FILE_NAME, MAIN_JS_CONTENT, MAIN_JS_FILE_NAME, ManagedFolderPublisher, ManagedFolderReconciler, RESERVED_VERSION_NAMES, RunOptionsSchema, STYLES_CSS_CONTENT, StaticFilesWriter, VERSION_PATTERN, VersionFactory, VersionMapSchema, VersionPruner, VersionSchema, VersionsReconciler, VersionsScanner, createDocsDeployer, runDocsDeploy, sleep };
