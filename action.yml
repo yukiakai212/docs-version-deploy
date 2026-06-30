@@ -2,6 +2,10 @@ name: "docs-version-deploy"
 description: "Deploy versioned static documentation to any GitHub repository"
 author: "yukiakai212"
 
+branding:
+  icon: book-open
+  color: blue
+
 inputs:
   docsDir:
     description: "Directory containing the built static documentation"

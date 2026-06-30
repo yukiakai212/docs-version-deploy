@@ -12,12 +12,12 @@
   },
   "scripts": {
     "test": "npm run build && npx vitest run --reporter verbose --coverage",
-    "format": "prettier --write **/*.{js,ts}",
-    "format:check": "prettier --check **/*.{js,ts}",
+    "format": "prettier --write **/*.{js,ts,json}",
+    "format:check": "prettier --check **/*.{js,ts,json}",
     "lint": "eslint src/**/*.ts",
-    "build": "npm run build:scripts && npm run build:assets && npm run build:action",
-    "build:assets": "tsup --config tsup.assets.config.ts && node dist/scripts/build-assets.js",
-    "build:scripts": "tsup --config tsup.scripts.config.ts",
+    "typecheck:workspace": "tsc -p tsconfig.workspace.json",
+    "build": "npm run typecheck:workspace && npm run build:assets && npm run build:action",
+    "build:assets": "tsup --config tsup.assets.config.ts && tsx workspace/scripts/build-assets.js",
     "build:action": "tsup --config tsup.action.config.ts",
     "docs": "npx typedoc",
     "prepare": "is-ci || husky"
