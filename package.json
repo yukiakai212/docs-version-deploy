@@ -16,10 +16,13 @@
     "format:check": "prettier --check **/*.{js,ts,json}",
     "lint": "eslint src/**/*.ts",
     "typecheck:workspace": "tsc -p tsconfig.workspace.json",
-    "build": "npm run typecheck:workspace && npm run build:assets && npm run build:action",
+    "build": "npm run build:assets && npm run build:action",
     "build:assets": "tsup --config tsup.assets.config.ts && tsx workspace/scripts/build-assets.js",
     "build:action": "tsup --config tsup.action.config.ts",
+    "build:action:public": "tsup --config tsup.action.public.config.ts",
+    "build:public": "npm run build:assets && npm run build:action:public",
     "docs": "npx typedoc",
+    "prepare:artifact": "tsx workspace/release/prepareArtifact.ts",
     "prepare": "is-ci || husky"
   },
   "files": [
@@ -55,6 +58,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^24.0.10",
     "@vitest/coverage-v8": "^4.0.15",
+    "@yukiakai/artifact": "^1.0.1",
     "dotenv": "^17.0.1",
     "eslint": "^9.30.0",
     "husky": "^9.1.7",
