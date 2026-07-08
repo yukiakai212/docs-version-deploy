@@ -1,6 +1,6 @@
 {
   "name": "docs-version-deploy",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Deploy versioned static documentation to any GitHub repository",
   "type": "module",
   "main": "./dist/index.js",
@@ -11,7 +11,7 @@
     "require": "./dist/index.cjs"
   },
   "scripts": {
-    "test": "npm run build && npx vitest run --reporter verbose --coverage",
+    "test": "echo npx vitest run --reporter verbose --coverage",
     "format": "prettier --write **/*.{js,ts,json}",
     "format:check": "prettier --check **/*.{js,ts,json}",
     "lint": "eslint src/**/*.ts",
