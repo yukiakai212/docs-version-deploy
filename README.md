@@ -2,7 +2,7 @@
 
 > Deploy versioned static documentation to any GitHub repository.
 
-A lightweight GitHub Action for deploying static documentation into versioned folders (`/v1`, `/v2`, `/beta`, ...), managing a `latest` alias, and generating a `_docs-version-deploy.json` file for building custom version selectors or landing pages.
+A lightweight GitHub Action for deploying static documentation into versioned folders (`/v1`, `/v2`, `/beta`, ...), managing a `latest` alias, and generating a `.docs-version-deploy.json` file for building custom version selectors or landing pages.
 
 ---
 
@@ -28,7 +28,7 @@ Example deployment:
 ```text
 /
   index.html
-  _docs-version-deploy.json
+  .docs-version-deploy.json
 
   /assets/
     main.js
@@ -44,7 +44,7 @@ Scoped deployment example (`targetDir=docs`):
 ```text
 /docs/
   index.html
-  _docs-version-deploy.json
+  .docs-version-deploy.json
 
   /assets/
   /v1/
@@ -145,7 +145,7 @@ Result:
 ```text
 /app1/
   index.html
-  _docs-version-deploy.json
+  .docs-version-deploy.json
 
   /assets/
   /v1/
@@ -173,7 +173,7 @@ The generated runtime includes:
 
 ### Versions Page
 
-Displays all available versions from `_docs-version-deploy.json`.
+Displays all available versions from `.docs-version-deploy.json`.
 
 ### Latest Page
 
