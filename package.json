@@ -1,6 +1,6 @@
 {
   "name": "docs-version-deploy",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Deploy versioned static documentation to any GitHub repository",
   "type": "module",
   "main": "./dist/index.js",
@@ -75,7 +75,7 @@
     "@actions/core": "^3.0.0",
     "@actions/exec": "^3.0.0",
     "@actions/io": "^3.0.2",
-    "@yukiakai/actions-git": "^1.0.2",
+    "@yukiakai/actions-git": "^2.0.0",
     "@yukiakai/find-up": "^1.1.7",
     "@yukiakai/path-extra": "^1.0.0",
     "@yukiakai/zod-extra": "^1.0.0",

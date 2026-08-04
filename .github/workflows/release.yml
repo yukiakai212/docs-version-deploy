@@ -9,19 +9,7 @@ permissions:
   contents: write
     
 jobs:
-  prepare-release-tag:
-    runs-on: ubuntu-latest
+  release:
+    uses: yukiakai212/actions-public/.github/workflows/publish-action-release.yml@v1
 
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: yukiakai212/actions-public/dist/prepare-release-tag@v1
-        with:
-          source: package.json
-  update-major-tag:
-    needs: prepare-release-tag
-
-    uses: yukiakai212/actions-public/.github/workflows/update-major-tag.yml@v1
-    
+    secrets: inherit
