@@ -1,63 +1,13 @@
 # docs-version-deploy
 
-> Deploy versioned static documentation to any GitHub repository.
+GitHub Action for publishing static documentation into Semantic Versioned directories in a GitHub repository.
 
-A lightweight GitHub Action for deploying static documentation into versioned folders (`/v1`, `/v2`, `/beta`, ...), managing a `latest` alias, and generating a `.docs-version-deploy.json` file for building custom version selectors or landing pages.
+The action maintains a version manifest, can publish shared static content for a documentation landing page, and can retain a limited number of previous versions per retention scope.
 
----
+## Quick start
 
-## Features
-
-- Deploy docs to **any GitHub repository**
-- Versioned structure (`/v1`, `/v2`, `/beta`, ...)
-- Optional `latest` alias
-- Automatic deployment manifest generation
-- Stateless design (filesystem = source of truth)
-- Safe git workflow (no force push)
-- Scoped deployments via `targetDir`
-- Built-in static runtime (`index.html`, assets, latest redirect)
-- Nested deployment protection
-- Runtime-safe structure reconciliation
-
----
-
-## Output Structure
-
-Example deployment:
-
-```text
-/
-  index.html
-  .docs-version-deploy.json
-
-  /assets/
-    main.js
-    styles.css
-
-  /v1/
-  /v2/
-  /latest/
-```
-
-Scoped deployment example (`targetDir=docs`):
-
-```text
-/docs/
-  index.html
-  .docs-version-deploy.json
-
-  /assets/
-  /v1/
-  /v2/
-  /latest/
-```
-
----
-
-## Usage
-
-```yaml
-name: Deploy Docs
+~~~yaml
+name: Deploy documentation
 
 on:
   push:
@@ -69,197 +19,165 @@ jobs:
     runs-on: ubuntu-latest
 
     concurrency:
-      group: deploy-docs
+      group: docs-version-deploy
       cancel-in-progress: false
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - name: Build docs
-        run: npm run build-docs
+      - name: Build documentation
+        run: npm run build:docs
 
-      - name: Deploy docs
-        uses: yukiakai212/docs-version-deploy@v1
+      - name: Deploy documentation
+        uses: yukiakai212/docs-version-deploy@v6
         with:
-          docsDir: dist/docs
-          targetRepository: your-org/your-docs-repo
-          targetDir: .
+          source-directory: dist/docs
+          target-repository: your-org/your-docs
+          target-directory: .
           branch: gh-pages
-          version: ${{ github.ref_name }}
-          markAsLatest: true
-          writeStaticFiles: true
-          commitMessage: docs: release {version}
-          token: ${{ secrets.GITHUB_TOKEN }}
-```
+          token: ${{ secrets.DOCS_DEPLOY_TOKEN }}
+          version: 2.4.0
+          retention-scope: stable
+          previous-versions-to-keep: "2"
+          mark-as-latest: "true"
+~~~
 
----
+target-repository accepts an owner/repository reference or a GitHub.com repository URL.
+
+## Deployment layout
+
+For target-directory: docs, publishing version 2.4.0 produces this layout:
+
+~~~text
+docs/
+  docs-version-deploy.json
+  index.html
+  latest/
+    index.html
+  assets/
+    styles.css
+    scripts/
+      ...
+  2.3.0/
+    ...
+  2.4.0/
+    ...
+~~~
+
+The action copies the contents of source-directory into target-directory/version.
+
+docs-version-deploy.json, index.html, latest/, and assets/ belong directly to the deployment directory; they do not belong to an individual version folder.
+
+latest/ is a redirect alias, not a documentation version directory. It reads latestVersion from the manifest, redirects to that version when present, and redirects to the root index when latestVersion is null.
 
 ## Inputs
 
-| Name | Required | Description |
-|---|---|---|
-| `docsDir` | ✅ | Path to built docs directory |
-| `targetRepository` | ✅ | Target repository (`owner/repo`) |
-| `branch` | ✅ | Deployment branch |
-| `version` | ✅ | Version name |
-| `targetDir` | ❌ | Target directory inside deployment repo (`.` by default) |
-| `markAsLatest` | ❌ | Mark deployed version as latest |
-| `writeStaticFiles` | ❌ | Write shared static runtime files |
-| `commitMessage` | ❌ | Custom commit message |
-| `group` | ❌ | Optional version group |
-| `cleanupStrategy` | ❌ | Cleanup strategy used before publishing |
-| `token` | ✅ | GitHub token with push access |
+| Input | Required | Default | Description |
+| --- | --- | --- | --- |
+| source-directory | Yes | - | Built documentation directory, relative to the GitHub workspace. |
+| target-repository | Yes | - | GitHub.com repository reference or URL that receives the deployment. |
+| target-directory | No | . | Directory inside the target repository that contains this documentation deployment. |
+| branch | Yes | - | Target repository branch to prepare and push. |
+| token | Yes | - | Token with write access to the target repository. |
+| commit-message | No | docs: deploy versioned documentation | Commit message used when the target repository changes. |
+| version | Yes | - | Strict Semantic Version to publish, for example 2.4.0 or 2.4.0-rc.1. |
+| retention-scope | No | - | Retention partition for the publication. Omit it to disable automatic retention. |
+| previous-versions-to-keep | Conditional | - | Number of prior versions to retain in retention-scope. Required when retention-scope is set. |
+| mark-as-latest | No | false | Mark the published version as the manifest's latest version. |
+| deploy-static-content | No | true | Replace the shared index.html, latest/, and assets/ content in the deployment directory. |
 
----
+## Manifest
 
-## How It Works
+The action stores deployment metadata in target-directory/docs-version-deploy.json.
 
-1. Clone the target repository
-2. Validate deployment structure
-3. Copy docs into `/version/`
-4. Optionally update `/latest/`
-5. Rebuild deployment manifest
-6. Reconcile static runtime files
-7. Commit and push changes
+~~~json
+{
+  "formatVersion": 2,
+  "latestVersion": "2.4.0",
+  "versions": [
+    {
+      "version": "2.4.0",
+      "retentionScope": "stable",
+      "publishedAt": 1770000000000
+    }
+  ]
+}
+~~~
 
----
+Entries are ordered by descending Semantic Version. The action reconciles the manifest with existing Semantic Version directory names before publishing: folders missing from the manifest are imported, while manifest entries whose folders no longer exist are removed.
 
-## Scoped Deployments
+## Retention
 
-You can deploy multiple independent documentation projects into the same repository using `targetDir`.
+Retention is opt-in and is partitioned by retention-scope.
 
-Example:
+~~~yaml
+with:
+  version: 2.4.0
+  retention-scope: stable
+  previous-versions-to-keep: "2"
+~~~
 
-```yaml
-- uses: yukiakai212/docs-version-deploy@v1
-  with:
-    docsDir: dist/app1-docs
-    targetRepository: your-org/docs
-    branch: gh-pages
-    targetDir: app1
-    version: v1
-```
+This retains the two highest previous Semantic Versions in the stable scope beside the version being published. Each scope is independent, so a project can use scopes such as stable-v1, stable-v2, beta, or next when it needs separate retention policies.
 
-Result:
+When retention-scope is omitted, the publication receives null metadata for that field and is not managed by automatic retention.
 
-```text
-/app1/
-  index.html
-  .docs-version-deploy.json
+## Shared static content
 
-  /assets/
-  /v1/
-  /latest/
-```
+By default, the action replaces these paths in target-directory from its bundled distribution:
 
----
+- index.html
+- latest/
+- assets/
 
-## Nested Deployment Protection
+These are action-owned paths. latest/ is the redirect alias for the manifest's latestVersion; assets/ contains the landing-page stylesheet and browser bundles.
 
-The action prevents invalid nested deployments such as:
+Before copying, the action removes each owned destination. In particular, it replaces the complete latest/ and assets/ directories, so files removed from a later action release cannot remain in the target repository.
 
-```text
-/v1/v2
-/docs/v1/v2
-```
+Set deploy-static-content: "false" when the target repository owns those paths itself. In that mode, the calling repository is responsible for maintaining any landing page, latest redirect, and browser assets it needs:
 
-This avoids corrupting the documentation structure.
+~~~yaml
+with:
+  deploy-static-content: "false"
+~~~
 
----
+## Safety rules
 
-## Runtime Pages
+Every deployment root owns exactly one manifest. The action rejects a target directory when another entry named docs-version-deploy.json exists above or below it. This prevents nested versioned-documentation deployments from corrupting each other's metadata.
 
-The generated runtime includes:
+Version directory names are strict Semantic Versions. Use 2.4.0, not arbitrary labels such as beta or v2.
 
-### Versions Page
+## Authentication
 
-Displays all available versions from `.docs-version-deploy.json`.
+Provide a token that can push to target-repository.
 
-### Latest Page
+- For the current repository, github.token can be sufficient when the job grants it repository write access.
+- For a different repository, especially a private one, use a fine-grained PAT or GitHub App token that has write access to that target repository.
 
-Automatically redirects to the latest version.
-
-If no latest version exists, it falls back to the versions page.
-
----
+Do not print the token or the authenticated Git remote in workflow logs.
 
 ## Concurrency
 
-This action does **not** enforce concurrency automatically.
+The action does not create a concurrency group itself. Configure one in the calling workflow so deployments to the same target branch are serialized:
 
-Recommended:
-
-```yaml
+~~~yaml
 concurrency:
-  group: deploy-docs
+  group: docs-version-deploy
   cancel-in-progress: false
-```
+~~~
 
-Without concurrency protection, parallel deployments may overwrite each other.
+Use a group specific to the target repository and branch when one workflow deploys to multiple documentation targets.
 
----
+## How deployment runs
 
-## Permissions
-
-For cross-repository deployment:
-
-```yaml
-token: ${{ secrets.PAT_TOKEN }}
-```
-
-`GITHUB_TOKEN` may not have permission to push to external repositories.
-
----
-
-## Version Format
-
-Version names are fully user-defined:
-
-```text
-v1
-v1.2.0
-beta
-nightly
-2026-05-13
-```
-
-Reserved names such as `latest` may not be used as versions.
-
----
-
-## Commit Message Variables
-
-Example:
-
-```yaml
-commitMessage: docs: release {version}
-```
-
-Available variables:
-
-- `{version}`
-- `{target}`
-
----
-
-## Disable Latest Alias
-
-```yaml
-markAsLatest: false
-```
-
----
-
-## Disable Static Runtime Files
-
-```yaml
-writeStaticFiles: false
-```
-
-Useful if you want to provide your own UI/runtime.
-
----
+1. Prepare the target repository and branch.
+2. Validate that the deployment directory is not nested with another manifest.
+3. Optionally replace shared static content.
+4. Synchronize manifest metadata with Semantic Version directories.
+5. Apply retention, when configured.
+6. Publish the source documentation into the requested version directory.
+7. Persist the manifest.
+8. Commit and push only when staged changes exist.
 
 ## License
 
-MIT © Yuki Akai
+MIT (c) Yuki Akai

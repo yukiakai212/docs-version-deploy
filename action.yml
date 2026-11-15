@@ -1,59 +1,60 @@
-name: "docs-version-deploy"
-description: "Deploy versioned static documentation to any GitHub repository"
-author: "yukiakai212"
+name: Deploy Versioned Documentation
+description: Publish versioned static documentation to a GitHub repository.
+author: yukiakai212
 
 branding:
   icon: book-open
   color: blue
 
 inputs:
-  docsDir:
-    description: "Directory containing the built static documentation"
+  source-directory:
+    description: Directory containing the built documentation, relative to the GitHub workspace.
     required: true
 
-  targetRepository:
-    description: "Target GitHub repository to deploy documentation into"
+  target-repository:
+    description: GitHub.com repository reference or URL that receives the deployment.
     required: true
+
+  target-directory:
+    description: Directory inside the target repository where versioned documentation is deployed.
+    required: false
+    default: '.'
 
   branch:
-    description: "Target branch used for deployment"
+    description: Branch to prepare and push in the target repository.
     required: true
-
-  version:
-    description: "Documentation version name"
-    required: true
-
-  targetDir:
-    description: "Target directory inside the deployment repository"
-    required: false
-    default: "."
-
-  markAsLatest:
-    description: "Mark this version as the latest version"
-    required: false
-    default: "false"
-
-  commitMessage:
-    description: "Custom git commit message"
-    required: false
-
-  group:
-    description: "Optional version group name"
-    required: false
-
-  cleanupStrategy:
-    description: "Cleanup strategy applied before publishing"
-    required: false
-
-  writeStaticFiles:
-    description: "Write shared static runtime files (index/assets/latest)"
-    required: false
-    default: "true"
 
   token:
-    description: "GitHub token with repository write access"
+    description: GitHub token with write access to the target repository.
     required: true
 
+  commit-message:
+    description: Commit message used when the deployment changes the target repository.
+    required: false
+    default: 'docs: deploy versioned documentation'
+
+  version:
+    description: Strict Semantic Version to publish.
+    required: true
+
+  retention-scope:
+    description: Optional retention scope for this publication. Leave empty to disable automatic retention.
+    required: false
+
+  previous-versions-to-keep:
+    description: Number of prior versions to retain in the retention scope. Required when retention-scope is set.
+    required: false
+
+  mark-as-latest:
+    description: Whether to mark the published version as latest.
+    required: false
+    default: 'false'
+
+  deploy-static-content:
+    description: Whether to deploy the action's shared static documentation content.
+    required: false
+    default: 'true'
+
 runs:
-  using: "node24"
-  main: "dist/action/action.cjs"
+  using: node24
+  main: dist/action/action.cjs
