@@ -1,6 +1,6 @@
 {
   "name": "docs-version-deploy",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Deploy versioned static documentation to any GitHub repository",
   "type": "module",
   "main": "./dist/index.js",
