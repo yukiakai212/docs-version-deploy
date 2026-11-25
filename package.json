@@ -12,8 +12,8 @@
   },
   "scripts": {
     "test": "echo npx vitest run --reporter verbose --coverage",
-    "format": "prettier --write **/*.{ts,json,yml,css,html}",
-    "format:check": "prettier --check **/*.{ts,json,yml,css,html}",
+    "format": "prettier --write **/*.{ts,json,yml,css,html,md}",
+    "format:check": "prettier --check **/*.{ts,json,yml,css,html,md}",
     "lint": "eslint src/**/*.ts",
     "typecheck:workspace": "tsc -p tsconfig.workspace.json",
     "build": "npm run build:assets && npm run build:action",
